@@ -42,3 +42,4 @@ https://janken.asotetu.work/js_tip/
 
 ## 工夫した点
 
+・参考サイトから

@@ -41,3 +41,7 @@ sqlite
 ・勉強していない言語だったが、やろうとしていることが理解でき早い段階で導入できた。
   →プログラミングのベースになる考え方が身に付いてきていると感じる。
 ・
+
+## イメージ画像
+
+https://github.com/m-miyatani802/portfolio_laravel-javascript/tree/main/image

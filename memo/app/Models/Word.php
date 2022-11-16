@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Kyslik\ColumnSortable\Sortable;
 
 class Word extends Model
 {
     use HasFactory;
+    use Sortable;
     const UPDATED_AT = null;
 
     /**
@@ -38,6 +40,6 @@ class Word extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id', 'reading', 'phrases', 'meaning', 'created_at',
+        'user_id', 'reading', 'phrases', 'typing', 'meaning', 'created_at',
     ];
 }

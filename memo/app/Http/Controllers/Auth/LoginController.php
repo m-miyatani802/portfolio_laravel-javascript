@@ -39,7 +39,7 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
     protected function loggedOut(\Illuminate\Http\Request $request) {
-        return redirect()->action('App\Http\Controllers\WordController@toppage');
+        return redirect()->action('App\Http\Controllers\WordController@topPage');
     }
 
 }

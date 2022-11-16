@@ -13,13 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        if(Schema::hasTable('mylists_words')){
-            return;
-        }
-        Schema::create('mylists_words', function (Blueprint $table) {
-            $table->integer('word_id');
-            $table->integer('mylist_id');
-            $table->timestamps();
+        Schema::table('words', function (Blueprint $table) {
+            $table->string('typing',255)->nullable(true)->after('meaning');
         });
     }
 
@@ -30,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mylist_words');
+        Schema::table('words', function (Blueprint $table) {
+            //
+        });
     }
 };

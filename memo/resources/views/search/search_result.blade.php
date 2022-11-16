@@ -1,4 +1,4 @@
-@extends('layouts.new')
+@extends('layouts.app')
 
 @section('title')
     search_result
@@ -9,9 +9,9 @@
         <div class="col-sm-2"></div>
         <div class="col-sm-8">
             <h1>検索結果</h1>
-            @if (isset($items['users']))
+            @if (!empty($items['users']))
                 @if (count($items['users']) > 0)
-                    <p>ユーザー一覧</p>
+                    <h2>~ユーザー一覧~</h2>
                     <table class="table table-striped table-hover">
                         <tr>
                             <th>USER名</th>
@@ -19,34 +19,37 @@
                         @foreach ($items['users'] as $item)
                             <tr>
                                 <td><a
-                                        href="{{ Route('other_user.page') }}?user_id={{ $item->user_id }}&user_name={{ $item->name }}">{{ $item->name }}</a>
+                                        href="{{ Route('other_user.page') }}?user_id={{ $item->id }}&user_name={{ $item->name }}">{{ $item->name }}</a>
                                 </td>
-                                <td>
-                                    <form action="{{ Route('favorite.user_delete') }}" method="post">
-                                        @csrf
-                                        <input type="submit" class="btn btn-primary mx-sm-1" value="お気に入りから外す">
-                                        <input type="hidden" name="other_user" value="{{ $item->other_user_id }}">
-                                    </form>
-                                </td>
+                                @if (!empty($items['favorites_users']))
+                                    @if ($items['favorites_users'] === $item->id)
+                                        <td>
+                                            <form action="{{ route('favorite.user_delete') }}">
+                                                <input type="hidden" name="other_user" value="{{ $item->id }}">
+                                            </form>
+                                        </td>
+                                    @endif
+                                @endif
                             </tr>
                         @endforeach
                     </table>
-                    {{-- {{ $items['users']->links() }} --}}
                 @endif
             @endif
             @if (isset($items['words']) && count($items['words']) > 0)
-                <p>単語一覧</p>
+                <h2>~単語一覧~</h2>
                 <table class="table table-striped table-hover">
                     <tr>
                         <th>読み方</th>
                         <th>語句</th>
                         <th>意味</th>
+                        <th>登録者</th>
                     </tr>
                     @foreach ($items['words'] as $item)
                         <tr>
-                            <td>{{ $item->reading }}</td>
-                            <td>{{ $item->phrases }}</td>
-                            <td>{{ $item->meaning }}</td>
+                            <td>{{ \Illuminate\Support\Str::limit($item->reading, 30, '...') }}</td>
+                            <td>{{ \Illuminate\Support\Str::limit($item->phrases, 30, '...') }}</td>
+                            <td>{{ \Illuminate\Support\Str::limit($item->meaning, 45, '...') }}</td>
+                            <td>{{ $item->user->name }}</td>
                             <td class="align-middle button">
                                 <span class="btn-group">
                                     <form action="{{ route('top.show') }}" method="get">
@@ -70,7 +73,6 @@
                                             <input type="submit" class="btn btn-primary mx-sm-1" value="お気に入り">
                                         </form>
                                     @endif
-
                                     @if (!empty($items['user_id']) && count($items['mylists']) === 0)
                                         <input type="submit" class="btn btn-primary mx-sm-1" value="マイリスト登録">
                                     @elseif(!empty($items['user_id']) && count($items['mylists']) > 0)
@@ -102,7 +104,6 @@
                                             </ul>
                                         </div>
                                     @endif
-
                                     @if ($items['user_id'] == $item->user_id)
                                         <form action="{{ route('words.destroy', $item->id) }}" method="post">
                                             @csrf
@@ -115,7 +116,7 @@
                         </tr>
                     @endforeach
                 </table>
-                {{ $items['words']->appends(['words_search' => $words_search, 'reading' => $reading, 'phrase' => $phrase, 'meaning' => $meaning, 'search_word' => $search_word])->links() }}
+                {{ $items['words']->appends(['words_search' => $words_search, 'reading' => $reading, 'phrases' => $phrases, 'meaning' => $meaning, 'search_word' => $search_word])->links() }}
             @elseif(isset($items['error']))
                 <div class="card">
                     <div class="card-header"></div>
@@ -123,6 +124,8 @@
                         <p>{{ $items['error'] }}</p>
                     </div>
                 </div>
+            @else
+                <p>検索しましたが、ありませんでした。。。</p>
             @endif
             <div class="col-sm-2"></div>
         </div>

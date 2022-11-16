@@ -1,4 +1,4 @@
-@extends('layouts.new')
+@extends('layouts.app')
 @section('title')
     単語詳細
 @endsection
@@ -17,19 +17,18 @@
                 <div class="col-sm-4"></div>
             </div>
             <?php endif ?>
-
         </div>
         <div class="col-sm-2"></div>
     </div>
     <div class="row-my-2">
         <div class="col-sm-2"></div>
         <div class="col-sm-8">
-            <h1>単語詳細</h1>
             <div class="card">
-                <div class="card-header"></div>
+                <div class="card-header">詳細</div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <label for="reading" class="form-label">読み</label>
+                        {{-- <label for="reading" class="form-label">読み</label> --}}
+                        <h3>読み方</h3>
                         <p>
                             @if (!$item['word']->reading == null)
                                 {{ $item['word']->reading }}
@@ -37,7 +36,8 @@
                         </p>
                     </div>
                     <div class="mb-3">
-                        <label for="phrases" class="form-label">語句</label>
+                        {{-- <label for="phrases" class="form-label">語句</label> --}}
+                        <h3>語句</h3>
                         <p>
                             @if (!$item['word']->phrases == null)
                                 {{ $item['word']->phrases }}
@@ -45,7 +45,8 @@
                         </p>
                     </div>
                     <div class="mb-3">
-                        <label for="meaning" class="form-label">意味</label>
+                        {{-- <label for="meaning" class="form-label">意味</label> --}}
+                        <h3>意味</h3>
                         <p>
                             @if (!$item['word']->meaning == null)
                                 {{ $item['word']->meaning }}
@@ -55,8 +56,8 @@
                     <div class="mb-3">
                         <label for="meaning" class="form-label">タイピングスペル</label>
                         <p>
-                            @if (!$item['typ'] == null)
-                                {{ $item['typ']->typing_character }}
+                            @if (!$item['word']->typing == null || !empty($item['word']->typing))
+                                {{ $item['word']->typing }}
                             @endif
                         </p>
                     </div>
@@ -68,7 +69,7 @@
                     @else
                     @endif
                     <div class="mb-3">
-                        <label for="user_register" class="form-label">登録ユーザー</label>
+                        <label for="user_register" class="form-label">登録者</label>
                         <a
                             href="{{ Route('other_user.page') }}?user_id={{ $item['word']->user_id }}&user_name={{ $item['word']->user->name }}">{{ $item['word']->user->name }}</a>
                     </div>
@@ -94,7 +95,7 @@
                     <div>
                         @if (!empty($item['user_id']) && empty($item['mylists']))
                             <input type="submit" class="btn btn-primary mx-sm-1" value="マイリスト登録">
-                        @elseif(count($item['mylists']) > 0)
+                        @elseif(!empty($item['mylists']))
                             <div class="dropdown">
                                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1"
                                     data-bs-toggle="dropdown" aria-expanded="false">

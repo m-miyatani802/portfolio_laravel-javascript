@@ -19,11 +19,13 @@ class TypingController extends Controller
      */
     public function top()
     {
-        $items = Word::join('typings', 'words.id', '=', 'typings.word_id')
-            ->select('words.reading', 'words.phrases', 'words.meaning', 'typings.word_id', 'typings.typing_character')
+        $items = Word::select('reading', 'phrases', 'meaning', 'id', 'typing')
+            ->whereNotNull('typing')
+            ->inRandomOrder()
             ->get();
 
-        return view('typ.top', compact('items'));
+        // dd($items);
+        return view('typ.index', compact('items'));
     }
 
     /**
@@ -31,9 +33,11 @@ class TypingController extends Controller
      */
     public function typing()
     {
-        $items = Word::join('typings', 'words.id', '=', 'typings.word_id')
-            ->where('user_id', Auth::id())
-            ->select('words.reading', 'words.phrases', 'words.meaning', 'typings.word_id', 'typings.typing_character')
+        $items = Word::where('user_id', Auth::id())
+            // ->where('typing', '!=', '')
+            ->whereNotNull('typing')
+            ->select('reading', 'phrases', 'meaning', 'id', 'typing')
+            ->inRandomOrder()
             ->get();
 
         // dd($items);
@@ -45,11 +49,18 @@ class TypingController extends Controller
      */
     public function favorite()
     {
-        $items = DB::table('favorites_words')->where('favorites_words.user_id', Auth::id())
-            ->join('words', 'favorites_words.word_id', '=', 'words.id')
-            ->join('typings', 'words.id', '=', 'typings.word_id')
-            ->select('favorites_words.*', 'words.reading', 'words.phrases', 'words.meaning', 'typings.typing_character')
+        // $items = DB::table('favorites_words')->where('favorites_words.user_id', Auth::id())
+        //     ->select('words.reading', 'words.phrases', 'words.meaning', 'typings.typing_character')
+        //     ->get();
+
+        $items = Word::leftJoin('favorites_words', 'words.id', '=', 'favorites_words.word_id')
+            ->where('favorites_words.user_id', '=', Auth::id())
+            ->whereNotNull('words.typing')
+            ->inRandomOrder()
             ->get();
+
+
+        // dd($items);
         return view('typ.index', compact('items'));
     }
 
@@ -60,8 +71,10 @@ class TypingController extends Controller
     {
         $items = DB::table('mylists_words')->where('mylist_id', $request->mylist_id)
             ->join('words', 'mylists_words.word_id', '=', 'words.id')
-            ->join('typings', 'words.id', '=', 'typings.word_id')
-            ->select('mylists_words.*', 'words.reading', 'words.phrases', 'words.meaning', 'typings.typing_character')
+            // ->join('typings', 'words.id', '=', 'typings.word_id')
+            ->select('mylists_words.*', 'words.reading', 'words.phrases', 'words.meaning', 'words.typing')
+            ->whereNotNull('words.typing')
+            ->inRandomOrder()
             ->get();
         return view('typ.index', compact('items'));
     }

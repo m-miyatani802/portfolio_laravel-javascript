@@ -39,7 +39,7 @@ class registerRequest extends FormRequest
     {
         return [
             'reading' => 'regex:/^[ぁ-ん]+$/',
-            'typing' => 'regex:/^[a-z]+$/',
+            'typing' => 'regex:/^[a-z_.\-]+$/',
         ];
     }
 

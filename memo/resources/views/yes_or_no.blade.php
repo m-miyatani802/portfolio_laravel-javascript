@@ -1,4 +1,4 @@
-@extends('layouts.new')
+@extends('layouts.app')
 
 @section('title')
     yes_or_no

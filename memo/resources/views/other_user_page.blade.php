@@ -1,4 +1,4 @@
-@extends('layouts.new')
+@extends('layouts.app')
 
 @section('title')
     他ユーザーページ
@@ -8,20 +8,25 @@
     <div class="row-my-2">
         <div class="col-sm-2"></div>
         <div class="col-sm-8">
-            <h1>{{ $items['other_user_name'] }}さんの登録単語</h1>
+            <h1>{{ $items['other_user_name'] }}さんのページ</h1>
+            <h2>~単語一覧~</h2>
+            <form action="{{ route('favorite.users_register') }}" method="post">
+                @csrf
+                <input type="hidden" name="other_id" value="{{ $items['other_user_id'] }}">
+                <input type="hidden" name="other_name" value="{{ $items['other_user_name'] }}">
+                <input type="submit" value="お気に入り登録しますか？">
+            </form>
             <table class="table table-striped table-hover">
                 <tr>
                     <th>読み方</th>
                     <th>語句</th>
                     <th>意味</th>
-                    <th>登録者</th>
                 </tr>
                 @foreach ($items['words'] as $item)
                     <tr>
                         <td>{{ $item->reading }}</td>
                         <td>{{ $item->phrases }}</td>
                         <td>{{ $item->meaning }}</td>
-                        <td>{{ $item->user->name }}</td>
                         <td class="align-middle button">
                             <span class="btn-group">
                                 <form action="{{ route('top.show') }}" method="get">
@@ -78,7 +83,6 @@
                                         </ul>
                                     </div>
                                 @endif
-
                                 @if ($items['user_id'] == $item->user_id)
                                     <form action="{{ route('words.destroy', $item->id) }}" method="post">
                                         @csrf

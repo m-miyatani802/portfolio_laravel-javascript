@@ -1,4 +1,4 @@
-@extends('layouts.new')
+@extends('layouts.app')
 
 @section('title')
     mylist_nameEdit
@@ -9,13 +9,14 @@
         <div class="col-sm-2"></div>
         <div class="col-sm-8">
             <div class="card">
-                <div class="card-header">MYリスト作成</div>
+                <div class="card-header">MYリスト 名前変更</div>
                 <div class="card-body">
                     <form action="{{ Route('mylist.nameUpdate') }}" method="post">
                         @csrf
                         <div class="mb-3">
                             <label for="mylist_name" class="form-label">MYlist名</label>
-                            <input type="text" name="mylist_name" class="form-control" id="mylist_name" value="{{ $item->name }}">
+                            <input type="text" name="mylist_name" class="form-control" id="mylist_name"
+                                value="{{ $item->name }}">
                             <input type="hidden" name="mylist_id" value="{{ $item->id }}">
                         </div>
                         <button type="submit" class="btn btn-primary">登録</button>

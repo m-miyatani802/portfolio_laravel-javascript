@@ -6,26 +6,43 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Word;
-use App\Models\User;
-use App\Models\Typing;
 use App\Http\Requests\registerRequest;
+use App\Models\FavoritesUser;
+use App\Libs\Common;
+use App\Libs\Search;
 
 class WordController extends Controller
 {
     /**
-     * すべての単語を取得し、ページへ遷移.
+     * すべての単語を取得し、トップページへ遷移.
      * 
      * @return \Illuminate\Http\Response
      */
-    public function topPage()
+    public function topPage(Request $request)
     {
-        $user_id = Auth::id();
+        $login_session = Common::loginSession($request);
         $items = [
-            'user_id' => Auth::id(),
-            'mylists' => DB::table('mylists')->where('user_id', Auth::id())->get(),
-            'words' => Word::orderBy('created_at', 'desc')->simplePaginate(10),
+            'user_id' => $login_session['user_id'],
+            'mylists' => $login_session['mylist'],
+            'words' => Word::sortable()->orderBy('created_at', 'desc')->simplePaginate(10),
         ];
-        return view('top', compact('items'));
+        $sort = null;
+        return view('top', compact('items', 'sort'));
+    }
+
+    /**
+     * トップページのソート反映用
+     */
+    public function sortTopPage(Request $request)
+    {
+        $login_session = Common::loginSession($request);
+        $sort = $request->sort;
+        $items = [
+            'user_id' => $login_session['user_id'],
+            'mylists' => $login_session['mylist'],
+            'words' => Word::sortable()->orderBy($sort, 'desc')->simplePaginate(10),
+        ];
+        return view('top', compact('items', 'sort'));
     }
 
     /**
@@ -34,17 +51,32 @@ class WordController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $user_id = Auth::id();
+        $login_session = Common::loginSession($request);
+        $sort = null;
+        $items = [
+            'user_id' => $login_session['user_id'],
+            'mylists' =>  $login_session['mylist'],
+            'words' =>  Word::where('user_id', '=', $login_session['user_id'])->orderBy('created_at', 'desc')->simplePaginate(10),
+        ];
+        return view('index', compact('items', 'sort'));
+    }
+
+    /**
+     * マイページのソート機能用
+     */
+    public function sortIndex(Request $request)
+    {
+        $login_session = Common::loginSession($request);
+        $sort = $request->sort;
 
         $items = [
-            'user_id' => $user_id,
-            'mylists' =>  DB::table('mylists')->where('user_id', $user_id)->get(),
-            'words' =>  Word::where('user_id', '=', $user_id)->orderBy('created_at', 'desc')->simplePaginate(10),
+            'user_id' => $login_session['user_id'],
+            'mylists' => $login_session['mylist'],
+            'words' => Word::where('user_id', '=', $login_session['user_id'])->sortable()->orderBy($sort, 'desc')->simplePaginate(10),
         ];
-
-        return view('index', compact('items'));
+        return view('index', compact('items', 'sort'));
     }
 
     /**
@@ -63,41 +95,26 @@ class WordController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(registerRequest $request)
+    public function store(Request $request)
     {
-        if ($request->reading == null)
-            $request->reading = '';
-        if ($request->phrases == null)
-            $request->phrases = '';
-        if ($request->meaning == null)
-            $request->meaning = '';
+        $login_session = Common::loginSession($request);
+        $array = Common::isWordsNull($request);
 
-        $word = new Word();
-        $word->create([
-            'user_id' => Auth::id(),
-            'reading' => $request->reading,
-            'phrases' => $request->phrases,
-            'meaning' => $request->meaning,
-        ]);
+        try {
+            DB::beginTransaction();
 
-
-        // dd($request->typing);
-        if (!$request->typing === '') {
-            $word1 = Word::where('user_id', Auth::id())->orderBy('created_at', 'desc')->first('id');
-
-            $typing = new Typing();
-            $typing->create([
-                'word_id' => $word1->id,
-                'typing_character' => $request->typing,
+            $word = new Word();
+            $word->create([
+                'user_id' => $login_session['user_id'],
+                'reading' => $array['reading'],
+                'phrases' => $array['phrases'],
+                'meaning' => $array['meaning'],
+                'typing' => $array['typing'],
             ]);
-        } elseif ($request->typing === '') {
-            $word1 = Word::where('user_id', Auth::id())->orderBy('created_at', 'desc')->first('id');
-            $$typing->create([
-                'word_id' => $word1->id,
-                'typing_character' => '',
-            ]);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
         }
-
         return redirect()->action('App\Http\Controllers\WordController@index');
     }
 
@@ -107,15 +124,13 @@ class WordController extends Controller
      * @param  Word $word
      * @return \Illuminate\Http\Response
      */
-    public function show(Word $word)
+    public function show(Word $word, Request $request)
     {
-        $user_id = Auth::id();
+        $login_session = Common::loginSession($request);
         $item = [
-            'user_id' => Auth::id(),
+            'user_id' => $login_session['user_id'],
             'word' => $word,
-            'mylists' => DB::table('mylists')->where('user_id', $user_id)->get(),
-            'typ' => Typing::where('word_id', $word->id)->first(),
-
+            'mylists' => $login_session['mylist'],
         ];
         return view('show', compact('item'));
     }
@@ -125,12 +140,12 @@ class WordController extends Controller
      */
     public function topShow(Request $request)
     {
-        $user_id = Auth::id();
+        $login_session = Common::loginSession($request);
+        // $user_id = Auth::id();
         $item = [
-            'user_id' => Auth::id(),
+            'user_id' => $login_session['user_id'],
             'word' => Word::where('id', $request->id)->first(),
-            'mylists' => DB::table('mylists')->where('user_id', $user_id)->get(),
-            'typ' => Typing::where('word_id', $request->id)->first(),
+            'mylists' => $login_session['mylist'],
         ];
         return view('show', compact('item'));
     }
@@ -141,11 +156,10 @@ class WordController extends Controller
      * @param  Word $word --- word_id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Word $word)
+    public function edit(Word $word, Request $request)
     {
-        $typing = Typing::where('word_id', $word->id)->first();
-        // dd($typing);
-        return view('edit', compact('word', 'typing'));
+        $item['user_id'] = $request->session()->get('login.user_id');
+        return view('edit', compact('word', 'item'));
     }
 
     /**
@@ -157,36 +171,21 @@ class WordController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $array = Common::isWordsNull($request);
 
-        if ($request->reading == null)
-            $request->reading = '';
-        if ($request->phrases == null)
-            $request->phrases = '';
-        if ($request->meaning == null)
-            $request->meaning = '';
+        try {
+            DB::beginTransaction();
 
-        Word::where('id', $id)->update([
-            'reading' => $request->reading,
-            'phrases' => $request->phrases,
-            'meaning' => $request->meaning,
-        ]);
-
-        $typ = Typing::where('word_id', $id)->get();
-        // dd($typ);
-
-        if (count($typ) == 0 && !$request->typing == null) {
-            $typing = new Typing();
-            $typing->create([
-                'word_id' => $id,
-                'typing_character' => $request->typing,
+            Word::where('id', $id)->update([
+                'reading' => $array['reading'],
+                'phrases' => $array['phrases'],
+                'meaning' => $array['meaning'],
+                'typing' => $array['typing'],
             ]);
-        } elseif (!count($typ) == 0 && !$request->typing == null) {
-            Typing::where('word_id', $id)->update([
-                'word_id' => $id,
-                'typing_character' => $request->typing,
-            ]);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
         }
-
         return redirect()->action('App\Http\Controllers\WordController@index');
     }
 
@@ -213,8 +212,12 @@ class WordController extends Controller
      */
     public function destroy(Word $word)
     {
-        Word::where('id', $word->id)->delete();
-        typing::where('word_id', $word->id)->delete();
+        try {
+            Word::where('id', $word->id)->delete();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+        }
         return redirect()->action('App\Http\Controllers\WordController@index');
     }
 
@@ -222,77 +225,21 @@ class WordController extends Controller
     /**
      * requestされたパラメータを使い検索結果を送り、遷移する
      * 
-     *
-     * 
      * @param  \Illuminate\Http\Request  $request --- search_word, word_search, user_search, reading, phrases, meaning.
      * @return \Illuminate\Http\Response
      */
     public function searchResults(Request $request)
     {
         $search_word = $request->search_word;
-        $word = Word::query();
-        if ($request->users_search == "1" && $request->words_search == "1") {
-            if ($request->reading == '1') {
-                $word = $word->orWhere('reading', 'like', '%' . $search_word . '%');
-            }
-            if ($request->phrases == "1") {
-                $word = $word->orWhere('phrases', 'like', '%' . $search_word . '%');
-            }
-            if ($request->meaning == "1") {
-                $word = $word->orWhere('meaning', 'like', '%' . $search_word . '%');
-            }
+        $words_search = $request->words_search;
+        $users_search = $request->users_search;
+        $reading = $request->reading;
+        $phrases = $request->phrases;
+        $meaning = $request->meaning;
+        $login_session = $request->session()->get('login');
+        $items = Search::searchVariable($search_word, $users_search, $words_search, $reading, $phrases, $meaning, $login_session);
 
-
-            $rec = $word->simplePaginate(10);
-            $words_search = $request->words_search;
-            $reading = $request->reading;
-            $phrase = $request->phrases;
-            $meaning = $request->meaning;
-
-            $items = [
-                'users' => User::where('name', 'like', '%' . $search_word . '%')->simplePaginate(5),
-                'words' => $rec,
-                'mylists' => DB::table('mylists')->where('user_id', Auth::id())->get(),
-                'user_id' => AUth::id(),
-            ];
-            return view('search.search_result', compact('items', 'words_search', 'reading', 'phrase', 'meaning', 'search_word'));
-        } elseif ($request->users_search == "1") {
-            $items = [
-                'users' => User::where('name', 'like', '%' . $search_word . '%')->simplePaginate(10),
-                'mylists' => DB::table('mylists')->where('user_id', Auth::id())->get(),
-                'user_id' => AUth::id(),
-            ];
-            return view('search.search_result', compact('items'));
-        } elseif ($request->words_search == "1") {
-
-            if ($request->reading == '1') {
-                $word = $word->orWhere('reading', 'like', '%' . $search_word . '%');
-            }
-            if ($request->phrases == "1") {
-                $word = $word->orWhere('phrases', 'like', '%' . $search_word . '%');
-            }
-            if ($request->meaning == "1") {
-                $word = $word->orWhere('meaning', 'like', '%' . $search_word . '%');
-            }
-
-            $rec = $word->simplePaginate(10);
-            $words_search = $request->words_search;
-            $reading = $request->reading;
-            $phrase = $request->phrases;
-            $meaning = $request->meaning;
-
-            $items = [
-                'words' => $rec,
-                'mylists' => DB::table('mylists')->where('user_id', Auth::id())->get(),
-                'user_id' => AUth::id(),
-            ];
-            return view('search.search_result', compact('items', 'words_search', 'reading', 'phrase', 'meaning', 'search_word'));
-        } else {
-            $items = [
-                'error' => 'ユーザー名ボタンか単語ボタンを押してください。'
-            ];
-            return view('search.search_result', compact('items'));
-        }
+        return view('search.search_result', compact('items', 'words_search', 'reading', 'phrases', 'meaning', 'search_word'));
     }
 
     /**
@@ -307,7 +254,7 @@ class WordController extends Controller
             'words' => Word::where('user_id', $request->user_id)->get(),
             'mylists' => DB::table('mylists')->where('user_id', Auth::id())->get(),
             'user_id' => Auth::id(),
-            'other_user_id' => Word::where('user_id', $request->id)->first(),
+            'other_user_id' => $request->user_id,
             'other_user_name' => $request->user_name,
         ];
         return view('other_user_page', compact('items'));

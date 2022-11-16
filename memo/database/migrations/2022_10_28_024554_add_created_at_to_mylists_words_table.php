@@ -13,10 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('typings', function (Blueprint $table) {
-            $table->integer('word_id')->nullable(false);
-            $table->string('typing_character', 255)->nullable(false);
-            // $table->timestamps();
+        Schema::table('mylists_words', function (Blueprint $table) {
+            $table->timestamps();
+
         });
     }
 
@@ -27,6 +26,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('typings');
+        Schema::table('mylists_words', function (Blueprint $table) {
+            //
+        });
     }
 };

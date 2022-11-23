@@ -9,7 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class logSuccessfulLogin
+class LogSuccessfulLogin
 {
     /**
      * Create the event listener.

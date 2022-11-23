@@ -6,7 +6,7 @@ use Illuminate\Auth\Events\Logout;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class logSuccessfulLogout
+class LogSuccessfulLogout
 {
     /**
      * Create the event listener.

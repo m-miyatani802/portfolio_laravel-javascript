@@ -4,7 +4,7 @@ namespace App\Libs;
 
 use App\Models\Word;
 use App\Models\User;
-use  App\Libs\Common;
+use App\Libs\Common;
 
 
 

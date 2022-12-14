@@ -100,5 +100,8 @@ Route::get('typ_string/register', 'App\Http\Controllers\TypingController@typingS
 Route::post('typ_string/register', 'App\Http\Controllers\TypingController@typingStringRegisterAction')->middleware('auth')->name('typ_string.register_action');
 // お気に入り登録した単語を取得しゲームを開始する.
 Route::get('typ/favorite/word', 'App\Http\Controllers\TypingController@favorite')->name('typ.favorite');
-
+// 各マイリスト内の単語を取得しゲームを開始する.
 Route::get('typ/mylist/word', 'App\Http\Controllers\TypingController@mylist')->name('typ.mylist');
+
+Route::get('inquiry/', 'App\Http\Controllers\WordController@inquiry')->name('inquiry');
+Route::post('inquiry/complete', 'App\Http\Controllers\WordController@inquirySend')->name('inquiry.send');

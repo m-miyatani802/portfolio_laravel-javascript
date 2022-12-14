@@ -70,47 +70,4 @@
         </div>
     </div>
 </div>
-
-{{-- <div class="row-my-2">
-    <div class="col-sm-3"></div>
-    <div class="col-sm-3">
-        <h1></h1>
-    </div>
-    <div class="col-sm-3"></div>
-</div>
-<div class="row-my-2">
-    <div class="col-sm-3">
-        <p></p>
-    </div>
-    <div class="col-sm-6">
-        <div class="forms">
-            <form action="{{ route('login') }}" method="post">
-                @csrf
-                <div class="mb-3">
-                    <label for="email" class="form-label">email</label>
-                    <input type="text" name="emal" class="form-control" id="email">
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">パスワード</label>
-                    <input type="password" name="password" class="form-control" id="password">
-                </div>
-                <div>
-                    <button type="submit" class="btn btn-primary">ログイン</button>
-                </div>
-            </form>
-            <div class="my-sm-2">
-                <form action="{{ route('register') }}">
-                    <button class="btn btn-primary" type="submit">アカウント作成</button>
-                </form>
-            </div>
-            <div>
-                <form action="./action.php">
-                    <button class="btn btn-outline-primary" onClick="history.back(); return false;">戻る</button>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-3"></div>
-</div> --}}
-
 @endsection

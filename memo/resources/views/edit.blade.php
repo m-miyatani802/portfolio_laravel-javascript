@@ -14,22 +14,22 @@
                     <form action="{{ route('words.updateAction', $word->id) }}" method="post">
                         @csrf
                         <div class="mb-3">
-                            <label for="reading" class="form-label">reading</label>
+                            <label for="reading" class="form-label">読み方</label>
                             <input type="text" name="reading" class="form-control" id="reading"
                                 value="{{ $word->reading }}">
                         </div>
                         <div class="mb-3">
-                            <label for="phrases" class="form-label">phrases</label>
+                            <label for="phrases" class="form-label">語句</label>
                             <input type="text" name="phrases" class="form-control" id="phrases"
                                 value="{{ $word->phrases }}">
                         </div>
                         <div class="mb-3">
-                            <label for="meaning" class="form-label">meaning</label>
+                            <label for="meaning" class="form-label">意味</label>
                             <input type="text" name="meaning" class="form-control" id="meaning"
                                 value="{{ $word->meaning }}">
                         </div>
                         <div class="mb-3">
-                            <label for="typing" class="form-label">typing</label>
+                            <label for="typing" class="form-label">タイピングスペル</label>
                             <input type="text" name="typing" class="form-control" id="typing"
                                 value="{{ $word->typing }}">
                         </div>

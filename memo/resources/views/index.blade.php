@@ -100,7 +100,7 @@
                                         <div class="dropdown">
                                             <button class="btn btn-primary dropdown-toggle" type="button"
                                                 id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                                mylists
+                                                マイリスト
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                                 @foreach ($items['mylists'] as $mylist)
@@ -137,7 +137,7 @@
                 @if (empty($sort))
                     {{ $items['words']->links() }}
                 @elseif(!empty($sort))
-                    {{ $items['words']->appends(['sort' => $sort])->links() }} }
+                    {{ $items['words']->appends(['sort' => $sort])->links() }}
                 @endif
             @else
                 <p>登録単語がありません</p>

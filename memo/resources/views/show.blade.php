@@ -27,7 +27,6 @@
                 <div class="card-header">詳細</div>
                 <div class="card-body">
                     <div class="mb-3">
-                        {{-- <label for="reading" class="form-label">読み</label> --}}
                         <h3>読み方</h3>
                         <p>
                             @if (!$item['word']->reading == null)
@@ -36,7 +35,6 @@
                         </p>
                     </div>
                     <div class="mb-3">
-                        {{-- <label for="phrases" class="form-label">語句</label> --}}
                         <h3>語句</h3>
                         <p>
                             @if (!$item['word']->phrases == null)
@@ -45,7 +43,6 @@
                         </p>
                     </div>
                     <div class="mb-3">
-                        {{-- <label for="meaning" class="form-label">意味</label> --}}
                         <h3>意味</h3>
                         <p>
                             @if (!$item['word']->meaning == null)
@@ -99,7 +96,7 @@
                             <div class="dropdown">
                                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1"
                                     data-bs-toggle="dropdown" aria-expanded="false">
-                                    mylists
+                                    マイリスト
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     @foreach ($item['mylists'] as $mylist)

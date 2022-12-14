@@ -14,7 +14,7 @@
                 @csrf
                 <input type="hidden" name="other_id" value="{{ $items['other_user_id'] }}">
                 <input type="hidden" name="other_name" value="{{ $items['other_user_name'] }}">
-                <input type="submit" value="お気に入り登録しますか？">
+                <input type="submit" class="btn btn-primary mx-sm-1" value="お気に入り登録しますか？">
             </form>
             <table class="table table-striped table-hover">
                 <tr>
@@ -58,7 +58,7 @@
                                     <div class="dropdown">
                                         <button class="btn btn-primary dropdown-toggle" type="button"
                                             id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                            mylists
+                                            マイリスト
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                             @if (empty($items['mylists']))

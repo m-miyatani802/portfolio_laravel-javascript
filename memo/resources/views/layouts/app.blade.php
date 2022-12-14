@@ -41,7 +41,7 @@
                         <div class="offcanvas-body">
                             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3 dropdown-menu-dark bg-success"">
                                 <li class="nav-item">
-                                    <a class="nav-link active" href="{{ route('words.index') }}">My page</a>
+                                    <a class="nav-link active" href="{{ route('words.index') }}">マイページ</a>
                                 </li>
 
                                 <li class="nav-item">
@@ -51,14 +51,14 @@
                                     <a class="nav-link active dropdown-toggle" href="#"
                                         id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown"
                                         aria-expanded="false">
-                                        favorite
+                                        お気に入り
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                                         <li><a class="dropdown-item nav-link active bg-white text-dark"
-                                                href="{{ route('favorite.users_index') }}">Users</a>
+                                                href="{{ route('favorite.users_index') }}">ユーザーリスト</a>
                                         </li>
                                         <li><a class="dropdown-item nav-link active bg-white text-dark"
-                                                href="{{ route('favorite.words_index') }}">Words</a>
+                                                href="{{ route('favorite.words_index') }}">単語リスト</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -66,7 +66,7 @@
                                     <a class="nav-link active dropdown-toggle" href="#"
                                         id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown"
                                         aria-expanded="false">
-                                        Mylist
+                                        マイリスト
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                                         <li><a class="dropdown-item nav-link active bg-white text-dark"
@@ -80,13 +80,13 @@
                                 @guest
                                     @if (Route::has('login'))
                                         <li class="nav-item">
-                                            <a class="nav-link active" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                            <a class="nav-link active" href="{{ route('login') }}">{{ __('ログイン') }}</a>
                                         </li>
                                     @endif
                                     @if (Route::has('register'))
                                         <li class="nav-item">
                                             <a class="nav-link active"
-                                                href="{{ route('register') }}">{{ __('Register') }}</a>
+                                                href="{{ route('register') }}">{{ __('ユーザー登録') }}</a>
                                         </li>
                                     @endif
                                 @else
@@ -101,7 +101,7 @@
                                                 href="{{ route('logout') }}"
                                                 onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                                {{ __('Logout') }}
+                                                {{ __('ログアウト') }}
                                             </a>
                                             <form id="logout-form" action="{{ route('logout') }}" method="POST"
                                                 class="d-none">
@@ -110,6 +110,9 @@
                                         </div>
                                     </li>
                                 @endguest
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="{{ route('inquiry') }}">ご意見</a>
+                                </li>
                             </ul>
                         </div>
 
@@ -175,7 +178,6 @@
     @yield('script')
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <!--自作のJS-->
     <script src="{{ asset('js/7-2-2.js') }}"></script>
     <script src="{{ asset('js/app.js') }}" defer></script>
 </body>

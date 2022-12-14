@@ -15,7 +15,7 @@
                     <p>えらー</p>
                 @endif
                 <div class="mb-3">
-                    <label for="reading" class="form-label">reading</label>
+                    <label for="reading" class="form-label">読み方</label>
                     <input type="text" name="reading" class="form-control @error('reading') is-invalid @enderror"
                         id="reading">
                     <p style="color: red">※出来る限りひらがなでお願いします。</p>
@@ -26,12 +26,12 @@
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <label for="phrases" class="form-label">phrases</label>
+                    <label for="phrases" class="form-label">語句</label>
                     <input type="text" name="phrases" class="form-control @error('phrases') is-invalid @enderror"
                         id="phrases">
                 </div>
                 <div class="mb-3">
-                    <label for="meaning" class="form-label">meaning</label>
+                    <label for="meaning" class="form-label">意味</label>
                     <input type="text" name="meaning" class="form-control @error('meaning') is-invalid @enderror"
                         id="meaning">
                 </div>

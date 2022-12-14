@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Word;
-use App\Http\Requests\registerRequest;
+use App\Http\Requests\InquiryRequest;
 use App\Models\FavoritesUser;
 use App\Libs\Common;
 use App\Libs\Search;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OpinionMail;
 
 class WordController extends Controller
 {
@@ -258,5 +260,20 @@ class WordController extends Controller
             'other_user_name' => $request->user_name,
         ];
         return view('other_user_page', compact('items'));
+    }
+
+    public function inquiry()
+    {
+        return view('inquiry.index');
+    }
+    public function inquirySend(InquiryRequest $request)
+    {
+        // dd($request);
+        $name = $request->name;
+        $email = $request->email;
+        $inquiry = $request->inquiry;
+
+        Mail::to($email)->send(new OpinionMail($name, $email, $inquiry));
+        return view('inquiry.complete');
     }
 }
